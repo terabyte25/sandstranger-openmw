@@ -8,7 +8,6 @@ import java.io.OutputStream;
 
 import android.content.Context;
 import android.content.res.AssetManager;
-import android.util.Log;
 
 public class CopyFilesFromAssets {
 

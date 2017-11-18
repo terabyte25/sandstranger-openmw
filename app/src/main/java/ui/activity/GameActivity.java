@@ -37,6 +37,13 @@ public class GameActivity extends SDLActivity implements ControlsHider {
     protected CursorVisibility cursorVisibility;
 
     static {
+        System.loadLibrary("avcodec");
+        System.loadLibrary("avdevice");
+        System.loadLibrary("avfilter");
+        System.loadLibrary("avformat");
+        System.loadLibrary("avutil");
+        System.loadLibrary("swresample");
+        System.loadLibrary("swscale");
         System.loadLibrary("openal");
         System.loadLibrary("SDL2");
         System.loadLibrary("GL");
@@ -52,7 +59,7 @@ public class GameActivity extends SDLActivity implements ControlsHider {
         parseCommandLineData();
         getPathToJni(ConfigsFileStorageHelper.CONFIGS_FILES_STORAGE_PATH);
         showControls();
-     }
+    }
 
     private void parseCommandLineData() {
         CommandlineParser commandlineParser = new CommandlineParser(Constants.commandLineData);

@@ -1,5 +1,6 @@
 package ui.controls;
 
+import android.util.Log;
 import android.view.MotionEvent;
 
 import org.libsdl.app.SDLActivity;
@@ -20,10 +21,8 @@ public class SdlNativeKeys {
         int i = event.getActionIndex();
         final int pointerID = event.getPointerId(i);
         final float pointerCount = event.getPressure(i);
-        SDLActivity.onNativeTouch(touchDevId, pointerID,
-                eventAction, x, y, pointerCount);
-
-
+        SDLActivity.mSeparateMouseAndTouch = true;
+        SDLActivity.onNativeTouch(touchDevId, 0,MotionEvent.ACTION_MOVE, x, y, 1.0f);
     }
 
 

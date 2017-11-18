@@ -21,6 +21,7 @@
 
         <ui.controls.TouchCameraSimulation
             android:id="@+id/superTouch"
+            android:visibility="gone"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
              />

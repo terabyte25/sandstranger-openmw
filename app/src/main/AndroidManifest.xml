@@ -45,8 +45,10 @@
             android:name="com.libopenmw.openmw.FileChooser"
             android:label="Choose File"
             android:screenOrientation="sensorLandscape">
+            <intent-filter>
             <action android:name="com.libopenmw.openmw.FileChooser" />
             <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
         </activity>
 
 
@@ -58,5 +60,7 @@
     <!-- Allow writing to external storage -->
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.CAMERA" />
+
 
 </manifest>
