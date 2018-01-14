@@ -53,7 +53,7 @@ public class GameActivity extends SDLActivity implements ControlsHider {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         GameState.setGameState(true);
-        NativeListener.initJavaVm();
+//        NativeListener.initJavaVm();
         KeepScreenOn();
      //   parseCommandLineData();
         getPathToJni(ConfigsFileStorageHelper.CONFIGS_FILES_STORAGE_PATH);
