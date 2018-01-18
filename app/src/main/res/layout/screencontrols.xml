@@ -51,7 +51,7 @@
             android:src="@drawable/inventory" />
 
         <ui.controls.Joystick
-            android:id="@+id/joystick"
+            android:id="@+id/joystickLeft"
             android:layout_width="50dip"
             android:layout_height="50dip"
             android:layout_alignParentBottom="true"
