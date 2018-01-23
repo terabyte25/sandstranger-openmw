@@ -45,18 +45,17 @@ public class GameActivity extends SDLActivity implements ControlsHider {
         System.loadLibrary("swresample");
         System.loadLibrary("swscale");
         System.loadLibrary("openal");
-        System.loadLibrary("SDL2");
         System.loadLibrary("GL");
+        System.loadLibrary("SDL2");
         System.loadLibrary("openmw");
     }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         GameState.setGameState(true);
         NativeListener.initJavaVm();
         KeepScreenOn();
-        parseCommandLineData();
+     //   parseCommandLineData();
         getPathToJni(ConfigsFileStorageHelper.CONFIGS_FILES_STORAGE_PATH);
         showControls();
     }
@@ -106,12 +105,13 @@ public class GameActivity extends SDLActivity implements ControlsHider {
 
     @Override
     public void onDestroy() {
+        super.onDestroy();
         if (!hideControls) {
             cursorVisibility.stopBackgroundTask();
         }
-        finish();
-        Process.killProcess(Process.myPid());
-        super.onDestroy();
+        System.exit(0);
+    //    finish();
+  //      Process.killProcess(Process.myPid());
     }
 
 
