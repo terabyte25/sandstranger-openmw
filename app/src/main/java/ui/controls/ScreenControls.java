@@ -1,5 +1,6 @@
 package ui.controls;
 
+import org.libsdl.app.SDL;
 import org.libsdl.app.SDLActivity;
 
 import ui.screen.ScreenScaler;
@@ -11,12 +12,16 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageButton;
+
+import static org.libsdl.app.SDLActivity.mTextEdit;
 
 public class ScreenControls {
 
@@ -39,13 +44,12 @@ public class ScreenControls {
 	public void showControls(boolean hide) {
 		if (!hide) {
 
-			int controlsFlag;
 
 			SharedPreferences Settings;
 
 			Settings = a.getSharedPreferences(Constants.APP_PREFERENCES,
 					Context.MODE_PRIVATE);
-			controlsFlag = Settings.getInt(
+			int controlsFlag = Settings.getInt(
 					Constants.APP_PREFERENCES_RESET_CONTROLS, -1);
 			enableTouch = false;
 
@@ -63,8 +67,6 @@ public class ScreenControls {
 
 			final Joystick joystickLeft = (Joystick) a.findViewById(R.id.joystickLeft);
 			joystickLeft.setStick(0);
-			Joystick joystickRight = a.findViewById(R.id.joystickRight);
-			joystickRight.setStick(1);
 
 			final ImageButton buttonRun = (ImageButton) a
 					.findViewById(R.id.buttonrun1);
@@ -164,8 +166,26 @@ public class ScreenControls {
 			final ImageButton buttonDiary = (ImageButton) a
 					.findViewById(R.id.buttonDiary);
 
+			final ImageButton buttonKeyboard = (ImageButton) a
+					.findViewById(R.id.keyboard_image_button);
+
 			buttonDiary.setOnTouchListener(new ButtonTouchListener(
 					KeyEvent.KEYCODE_J,false));
+
+			buttonKeyboard.setOnClickListener(new View.OnClickListener() {
+				@Override
+				public void onClick(View view) {
+					if (mTextEdit!=null) {
+						Log.d("ADDWDAWDDAW","DWADWAWDADdwadwdawda");
+						InputMethodManager imm = (InputMethodManager) SDL.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+						imm.showSoftInput(mTextEdit, 0);
+					}
+				}
+			});
+
+			final ImageButton buttonBackspace = a.findViewById(R.id.buttonBackspace);
+			buttonBackspace.setOnTouchListener(new ButtonTouchListener(
+					KeyEvent.KEYCODE_DEL,false));
 
 			final ImageButton buttonUse = (ImageButton) a
 					.findViewById(R.id.buttonUse);
@@ -182,12 +202,10 @@ public class ScreenControls {
 					showControls = !showControls;
 				}
 			});
-			if (true || controlsFlag == -1 || controlsFlag == 1) {
+
+			if (controlsFlag == -1 || controlsFlag == 1) {
 				joystickLeft.setLayoutParams(ControlsParams.coordinates(joystickLeft,
 						75, 400, 250, 250));
-
-				joystickRight.setLayoutParams(ControlsParams.coordinates(joystickRight,
-						650, 400, 250, 250));
 
 				buttonRun.setLayoutParams(ControlsParams.coordinates(buttonRun,
 						65, 330, 70, 70));
@@ -207,6 +225,8 @@ public class ScreenControls {
 				AlphaView.setAlphaForView(buttonSave,0.5f);
 				AlphaView.setAlphaForView(buttonPause,0.5f);
 				AlphaView.setAlphaForView(buttonDiary,0.5f);
+				AlphaView.setAlphaForView(buttonKeyboard,0.5f);
+				AlphaView.setAlphaForView(buttonBackspace,0.5f);
 				AlphaView.setAlphaForView(buttonChangePerson,0.5f);
 				AlphaView.setAlphaForView(buttonWait,0.5f);
 				AlphaView.setAlphaForView(buttonConsole,0.5f);
@@ -223,6 +243,12 @@ public class ScreenControls {
 						buttonWeapon, 880, 95, 70, 70));
 				buttonDiary.setLayoutParams(ControlsParams.coordinates(
 						buttonDiary, 414, 0, 70, 70));
+
+				buttonKeyboard.setLayoutParams(ControlsParams.coordinates(
+						buttonKeyboard, 500, 0, 70, 70));
+
+				buttonBackspace.setLayoutParams(ControlsParams.coordinates(
+						buttonBackspace, 600, 0, 70, 70));
 				buttonPause.setLayoutParams(ControlsParams.coordinates(
 						buttonPause, 950, 0, 60, 60));
 				buttonLoad.setLayoutParams(ControlsParams.coordinates(
@@ -259,6 +285,10 @@ public class ScreenControls {
 
 				AlphaView.setAlphaForView(buttonDiary, Settings.getFloat(
 						Constants.APP_PREFERENCES_BUTTON_DIARY_OPACITY, -1));
+
+				AlphaView.setAlphaForView(buttonKeyboard, Settings.getFloat(
+						Constants.APP_PREFERENCES_BUTTON_KEYBOARD_OPACITY, -1));
+
 
 				AlphaView.setAlphaForView(buttonPause,Settings.getFloat(
 						Constants.APP_PREFERENCES_BUTTON_PAUSE_OPACITY, -1));
@@ -300,15 +330,15 @@ public class ScreenControls {
 						Constants.APP_PREFERENCES_JOYSTICK_OPACITY, -1));
 
 
-
-				joystickLeft.setLayoutParams(ControlsParams.coordinatesConfigureControls(
-						joystickLeft, Settings.getInt(
+				joystickLeft.setLayoutParams(ControlsParams.coordinates(joystickLeft,
+						Settings.getInt(
 								Constants.APP_PREFERENCES_JOYSTICK_X, -1),
 						Settings.getInt(Constants.APP_PREFERENCES_JOYSTICK_Y,
 								-1), Settings.getInt(
 								Constants.APP_PREFERENCES_JOYSTICK_SIZE, -1),
 						Settings.getInt(
 								Constants.APP_PREFERENCES_JOYSTICK_SIZE, -1)));
+
 				buttonRun
 						.setLayoutParams(ControlsParams
 								.coordinatesConfigureControls(
@@ -405,6 +435,23 @@ public class ScreenControls {
 										Settings.getInt(
 												Constants.APP_PREFERENCES_BUTTON_DIARY_SIZE,
 												-1)));
+
+				buttonKeyboard
+						.setLayoutParams(ControlsParams.coordinatesConfigureControls(
+								buttonKeyboard,
+								Settings.getInt(
+										Constants.APP_PREFERENCES_BUTTON_KEYBOARD_X,
+										-1),
+								Settings.getInt(
+										Constants.APP_PREFERENCES_BUTTON_KEYBOARD_Y,
+										-1),
+								Settings.getInt(
+										Constants.APP_PREFERENCES_BUTTON_KEYBOARD_SIZE,
+										-1),
+								Settings.getInt(
+										Constants.APP_PREFERENCES_BUTTON_KEYBOARD_SIZE,
+										-1)));
+
 				buttonPause
 						.setLayoutParams(ControlsParams
 								.coordinatesConfigureControls(

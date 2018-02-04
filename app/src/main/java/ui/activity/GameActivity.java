@@ -2,23 +2,32 @@
 package ui.activity;
 
 import android.annotation.SuppressLint;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Process;
 import android.preference.PreferenceManager;
+import android.support.v7.app.AlertDialog;
 import android.system.ErrnoException;
 import android.system.Os;
 import android.util.Log;
+import android.text.InputType;
+import android.util.DisplayMetrics;
+import android.util.Log;
+import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 
 import com.libopenmw.openmw.R;
 
 import org.libsdl.app.SDLActivity;
+import org.libsdl.app.SDLInputConnection;
 
 import constants.Constants;
 import cursor.MouseCursor;
@@ -168,6 +177,93 @@ public class GameActivity extends SDLActivity {
         }
     }
 
-    private int currentApiVersion;
+
+    // Touch events
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        switch (event.getActionMasked()) {
+            case MotionEvent.ACTION_DOWN:
+            case MotionEvent.ACTION_POINTER_DOWN:
+                if (numPointersDown == 0) {
+                    startX = event.getX();
+                    startY = event.getY();
+                }
+                ++numPointersDown;
+                maxPointersDown = Math.max(numPointersDown, maxPointersDown);
+                break;
+            case MotionEvent.ACTION_UP:
+            case MotionEvent.ACTION_POINTER_UP:
+                numPointersDown = Math.max(0, numPointersDown - 1);
+                if (numPointersDown == 0) {
+                    // everything's up, do the action
+                    if (maxPointersDown == 3) {
+                        showVirtualInput();
+                    } else if (!isMoving && SDLActivity.isMouseShown() != 0) {
+                        // only send clicks if we didn't move
+                        int mouseX = SDLActivity.getMouseX();
+                        int mouseY = SDLActivity.getMouseY();
+                        int mouseButton = 0;
+
+                        if (maxPointersDown == 1)
+                            mouseButton = 1;
+                        else if (maxPointersDown == 2)
+                            mouseButton = 2;
+
+                        if (mouseButton != 0) {
+                            SDLActivity.onNativeMouse(mouseButton, MotionEvent.ACTION_DOWN, mouseX, mouseY);
+                            final Handler handler = new Handler();
+                            handler.postDelayed(() -> SDLActivity.onNativeMouse(0, MotionEvent.ACTION_UP, mouseX, mouseY), 100);
+                        }
+                    }
+
+                    maxPointersDown = 0;
+                    isMoving = false;
+                }
+                break;
+            case MotionEvent.ACTION_MOVE:
+                if (maxPointersDown == 1) {
+                    float diffX = event.getX() - startX;
+                    float diffY = event.getY() - startY;
+                    double distance = Math.sqrt(diffX * diffX + diffY * diffY);
+
+                    if (distance > mouseDeadzone) {
+                        isMoving = true;
+                        startX = event.getX();
+                        startY = event.getY();
+                    } else if (isMoving) {
+                        int mouseX = SDLActivity.getMouseX();
+                        int mouseY = SDLActivity.getMouseY();
+
+                        long newMouseX = Math.round(mouseX + diffX * mouseScalingFactor);
+                        long newMouseY = Math.round(mouseY + diffY * mouseScalingFactor);
+
+                        if (SDLActivity.isMouseShown() != 0)
+                            SDLActivity.onNativeMouse(0, MotionEvent.ACTION_MOVE, newMouseX, newMouseY);
+
+                        startX = event.getX();
+                        startY = event.getY();
+                    }
+                }
+                break;
+        }
+
+        return true;
+    }
+
+    private void showVirtualInput() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Virtual input");
+
+        final EditText input = new EditText(this);
+        builder.setView(input);
+
+        builder.setPositiveButton("OK", (dialog, which) -> {
+            String text = input.getText().toString();
+            SDLInputConnection.nativeCommitText(text, 0);
+        });
+        builder.setNegativeButton("Cancel", (dialog, which) -> dialog.cancel());
+
+        builder.show();
+    }
 
 }

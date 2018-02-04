@@ -50,7 +50,7 @@
             android:scaleType="fitCenter"
             android:src="@drawable/inventory" />
 
-        <ui.controls.Joystick
+        <ui.controls.JoystickLeft
             android:id="@+id/joystickLeft"
             android:layout_width="50dip"
             android:layout_height="50dip"
@@ -356,6 +356,27 @@
             android:layout_height="30dip"
             android:scaleType="fitCenter"
             android:src="@drawable/pointer_arrow" />
+
+        <ImageButton
+            android:id="@+id/keyboard_image_button"
+            android:layout_width="50dip"
+            android:layout_height="50dip"
+            android:background="@null"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:scaleType="fitCenter"
+            android:src="@drawable/keyboard" />
+
+        <ImageButton
+            android:id="@+id/buttonBackspace"
+            android:layout_width="50dip"
+            android:layout_height="50dip"
+            android:background="@null"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:scaleType="fitCenter"
+            android:src="@drawable/del" />
+
     </RelativeLayout>
 
 </FrameLayout>
