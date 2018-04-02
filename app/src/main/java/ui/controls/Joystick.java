@@ -19,7 +19,7 @@ public class Joystick extends View {
     // Initial touch position
     protected float initialX, initialY;
     // Current touch position
-    protected float currentX, currentY;
+    protected float currentX = -1, currentY = -1;
     // Whether the finger is down
     protected Boolean down = false;
     // left or right stick
@@ -57,6 +57,10 @@ public class Joystick extends View {
             canvas.drawCircle(initialX, initialY, getWidth() / 10, paint);
         }
 
+        if (currentX < 0 || currentY < 0) {
+            currentX = currentY = getWidth() / 2;
+        }
+
         // Draw circle for current stick position
         canvas.drawCircle(currentX, currentY, getWidth() / 5, paint);
     }
@@ -81,6 +85,7 @@ public class Joystick extends View {
             }
             case MotionEvent.ACTION_UP: {
                 down = false;
+                currentX = currentY = -1;
                 break;
             }
         }
