@@ -10,6 +10,7 @@ import android.view.MotionEvent;
 import android.view.View;
 
 import org.libsdl.app.SDLActivity;
+import org.libsdl.app.SDLGenericMotionListener_API12;
 
 public class TouchCameraSimulation extends View{
 
@@ -43,7 +44,6 @@ public class TouchCameraSimulation extends View{
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-           /* Ref: http://developer.android.com/training/gestures/multi.html */
         final int touchDevId = event.getDeviceId();
         final int pointerCount = event.getPointerCount();
         int action = event.getActionMasked();
@@ -53,7 +53,8 @@ public class TouchCameraSimulation extends View{
         float x,y,p;
 
         // !!! FIXME: dump this SDK check after 2.0.4 ships and require API14.
-        if (event.getSource() == InputDevice.SOURCE_MOUSE && SDLActivity.mSeparateMouseAndTouch) {
+        // 12290 = Samsung DeX mode desktop mouse
+        if ((event.getSource() == InputDevice.SOURCE_MOUSE || event.getSource() == 12290) && SDLActivity.mSeparateMouseAndTouch) {
             if (Build.VERSION.SDK_INT < 14) {
                 mouseButton = 1; // all mouse buttons are the left button
             } else {
@@ -63,7 +64,14 @@ public class TouchCameraSimulation extends View{
                     mouseButton = 1;    // oh well.
                 }
             }
-            SDLActivity.onNativeMouse(mouseButton, action, event.getX(0), event.getY(0));
+
+            // We need to check if we're in relative mouse mode and get the axis offset rather than the x/y values
+            // if we are.  We'll leverage our existing mouse motion listener
+            SDLGenericMotionListener_API12 motionListener = SDLActivity.getMotionListener();
+            x = motionListener.getEventX(event);
+            y = motionListener.getEventY(event);
+
+            SDLActivity.onNativeMouse(mouseButton, action, x, y, motionListener.inRelativeMode());
         } else {
             switch(action) {
                 case MotionEvent.ACTION_MOVE:
@@ -77,7 +85,6 @@ public class TouchCameraSimulation extends View{
                             // see the documentation of getPressure(i)
                             p = 1.0f;
                         }
-
                         SDLActivity.onNativeTouch(touchDevId, 0, action, x, y, p);
                     }
                     break;
@@ -116,7 +123,7 @@ public class TouchCameraSimulation extends View{
                             // see the documentation of getPressure(i)
                             p = 1.0f;
                         }
-                        SDLActivity.onNativeTouch(touchDevId,0 , MotionEvent.ACTION_UP, x, y, p);
+                        SDLActivity.onNativeTouch(touchDevId, 0, MotionEvent.ACTION_UP, x, y, p);
                     }
                     break;
 
@@ -124,6 +131,7 @@ public class TouchCameraSimulation extends View{
                     break;
             }
         }
+
         return true;
     }
 

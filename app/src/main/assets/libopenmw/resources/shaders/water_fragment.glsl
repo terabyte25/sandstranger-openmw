@@ -227,12 +227,12 @@ void main(void)
     fresnel = clamp(fresnel, 0.0, 1.0);
 
 #if REFRACTION
-    float normalization = frustumDepth / 1000;
+    float normalization = frustumDepth / 1000.0;
     float depthSample = linearizeDepth(texture2D(refractionDepthMap,screenCoords).x) * normalization;
     float depthSampleDistorted = linearizeDepth(texture2D(refractionDepthMap,screenCoords-(normal.xy*REFR_BUMP)).x) * normalization;
     float surfaceDepth = linearizeDepth(gl_FragCoord.z) * normalization;
     float realWaterDepth = depthSample - surfaceDepth;  // undistorted water depth in view direction, independent of frustum
-    float shore = clamp(realWaterDepth / BUMP_SUPPRESS_DEPTH,0,1);
+    float shore = clamp(realWaterDepth / BUMP_SUPPRESS_DEPTH,0.0,1.0);
 #else
     float shore = 1.0;
 #endif
@@ -276,6 +276,6 @@ void main(void)
 #if REFRACTION
     gl_FragData[0].w = 1.0;
 #else
-    gl_FragData[0].w = clamp(fresnel*6.0 + specular, 0.0, 1.0);     //clamp(fresnel*2.0 + specular, 0.0, 1.0);
+    gl_FragData[0].w = clamp(fresnel*6.0 + specular * gl_LightSource[0].specular.w, 0.0, 1.0);     //clamp(fresnel*2.0 + specular * gl_LightSource[0].specular.w, 0.0, 1.0);
 #endif
 }

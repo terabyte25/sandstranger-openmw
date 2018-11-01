@@ -80,6 +80,7 @@ public class GameActivity extends SDLActivity {
         }
         System.loadLibrary("openal");
         System.loadLibrary("GL");
+        System.loadLibrary("hidapi");
         System.loadLibrary("SDL2");
         System.loadLibrary("openmw");
     }
@@ -97,35 +98,7 @@ public class GameActivity extends SDLActivity {
         } catch (Exception e) {
 
         }
-        currentApiVersion = android.os.Build.VERSION.SDK_INT;
 
-        final int flags = View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                | View.SYSTEM_UI_FLAG_FULLSCREEN
-                | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
-
-        // This work only for android 4.4+
-        if (currentApiVersion >= Build.VERSION_CODES.KITKAT) {
-
-            getWindow().getDecorView().setSystemUiVisibility(flags);
-
-            // Code below is to handle presses of Volume up or Volume down.
-            // Without this, after pressing volume buttons, the navigation bar will
-            // show up and won't hide
-            final View decorView = getWindow().getDecorView();
-            decorView
-                    .setOnSystemUiVisibilityChangeListener(new View.OnSystemUiVisibilityChangeListener() {
-
-                        @Override
-                        public void onSystemUiVisibilityChange(int visibility) {
-                            if ((visibility & View.SYSTEM_UI_FLAG_FULLSCREEN) == 0) {
-                                decorView.setSystemUiVisibility(flags);
-                            }
-                        }
-                    });
-        }
 //        (ConfigsFileStorageHelper.CONFIGS_FILES_STORAGE_PATH);
         showControls();
     }
@@ -164,16 +137,6 @@ public class GameActivity extends SDLActivity {
             ScreenScaler.textScaler(QuickPanel.getInstance().showPanel, 4);
             ScreenScaler.textScaler(QuickPanel.getInstance().f1, 4);
             QuickPanel.getInstance().f1.setVisibility(Button.GONE);
-        }
-        if(currentApiVersion >= Build.VERSION_CODES.KITKAT && hasFocus)
-        {
-            getWindow().getDecorView().setSystemUiVisibility(
-                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                            | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                            | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                            | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                            | View.SYSTEM_UI_FLAG_FULLSCREEN
-                            | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
         }
     }
 

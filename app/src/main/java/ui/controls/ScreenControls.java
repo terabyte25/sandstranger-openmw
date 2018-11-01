@@ -21,8 +21,6 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageButton;
 
-import static org.libsdl.app.SDLActivity.mTextEdit;
-
 public class ScreenControls {
 
 	public static boolean showControls = false;
