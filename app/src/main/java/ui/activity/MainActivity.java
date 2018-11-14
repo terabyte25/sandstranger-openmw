@@ -1,18 +1,17 @@
 package ui.activity;
 
-import android.app.Activity;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.hardware.camera2.CameraCharacteristics;
-import android.hardware.camera2.CameraManager;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -23,22 +22,23 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.libopenmw.openmw.FileChooser;
+import com.afollestad.materialdialogs.folderselector.FolderChooserDialog;
 import com.libopenmw.openmw.R;
 import com.melnykov.fab.FloatingActionButton;
 
+import java.io.File;
+
 import constants.Constants;
+import file.ConfigsFileStorageHelper;
+import permission.PermissionHelper;
 import plugins.bsa.BsaUtils;
-import ui.game.GameState;
-import ui.fragments.FragmentControls;
+import prefs.PreferencesHelper;
 import ui.fragments.FragmentPlugins;
 import ui.fragments.FragmentSettings;
-import permission.PermissionHelper;
+import ui.game.GameState;
 import ui.screen.ScreenScaler;
-import file.ConfigsFileStorageHelper;
-import prefs.PreferencesHelper;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements FolderChooserDialog.FolderCallback {
 
     private NavigationView navigationView;
     private DrawerLayout drawerLayout;
@@ -49,6 +49,30 @@ public class MainActivity extends AppCompatActivity {
     private static final int REQUEST_PATH = 1;
     private SharedPreferences Settings;
     private TextListener listener;
+
+    @Override
+    public void onFolderSelection(@NonNull FolderChooserDialog dialog, @NonNull File folder) {
+        String curDir = folder.getAbsolutePath();
+
+        switch (editTextMode) {
+            case DATA_PATH:
+                Constants.APPLICATION_DATA_STORAGE_PATH = curDir;
+                break;
+        }
+        setTexWatcher();
+        path.setVisibility(EditText.VISIBLE);
+        browseButton.setVisibility(Button.VISIBLE);
+        path.setText(curDir);
+
+    }
+
+    @Override
+    public void onFolderChooserDismissed(@NonNull FolderChooserDialog dialog) {
+        setTexWatcher();
+        path.setVisibility(EditText.VISIBLE);
+        browseButton.setVisibility(Button.VISIBLE);
+    }
+
     private enum TEXT_MODE {DATA_PATH, COMMAND_LINE}
     private static TEXT_MODE editTextMode;
     private ConfigsFileStorageHelper configsFileStorageHelper;
@@ -73,7 +97,6 @@ public class MainActivity extends AppCompatActivity {
         browseButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                FileChooser.isDirMode = true;
                 getFolder();
             }
         });
@@ -99,6 +122,7 @@ public class MainActivity extends AppCompatActivity {
             }
 
         });
+
     }
 
     private void initializeNavigationView(Toolbar toolbar) {
@@ -125,12 +149,6 @@ public class MainActivity extends AppCompatActivity {
                         isSettingsEnabled = false;
                         disableToolBarViews();
                         MainActivity.this.getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, new FragmentPlugins()).commit();
-                        return true;
-                    case R.id.controls:
-                        showOverflowMenu(false);
-                        disableToolBarViews();
-                        MainActivity.this.getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, new FragmentControls()).commit();
-
                         return true;
                     case R.id.settings:
                         disableToolBarViews();
@@ -174,32 +192,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void getFolder() {
-        Intent intent = new Intent(this, FileChooser.class);
-        startActivityForResult(intent, REQUEST_PATH);
+        new FolderChooserDialog.Builder(this)
+                .chooseButton(R.string.md_choose_label)  // changes label of the choose button
+                .tag("optional-identifier")
+                .goUpLabel("Up") // custom go up label, default label is "..."
+                .show(this);
     }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == REQUEST_PATH) {
-            if (resultCode == Activity.RESULT_OK) {
-                String curDir = data.getStringExtra("GetDir");
-
-                switch (editTextMode) {
-                    case DATA_PATH:
-                        Constants.APPLICATION_DATA_STORAGE_PATH = curDir;
-                        break;
-                }
-                setTexWatcher();
-                path.setVisibility(EditText.VISIBLE);
-                browseButton.setVisibility(Button.VISIBLE);
-                path.setText(curDir);
-
-            }
-        }
-        super.onActivityResult(requestCode, resultCode, data);
-
-    }
-
 
     private void startGame() {
 
@@ -358,7 +356,6 @@ public class MainActivity extends AppCompatActivity {
 
 
     }
-
 }
 
 

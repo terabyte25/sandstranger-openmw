@@ -1,6 +1,7 @@
 package ui.controls;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Build;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -10,7 +11,7 @@ import android.view.View;
 
 import org.libsdl.app.SDLActivity;
 
-public class TouchCameraSimulation extends View {
+public class TouchCameraSimulation extends View{
 
     private float x1, x2, y1, y2;
     private DirectionListener directionListener;
@@ -38,6 +39,92 @@ public class TouchCameraSimulation extends View {
 
     private void initView() {
         setFocusable(true);
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+           /* Ref: http://developer.android.com/training/gestures/multi.html */
+        final int touchDevId = event.getDeviceId();
+        final int pointerCount = event.getPointerCount();
+        int action = event.getActionMasked();
+        int pointerFingerId;
+        int mouseButton;
+        int i = -1;
+        float x,y,p;
+
+        // !!! FIXME: dump this SDK check after 2.0.4 ships and require API14.
+        if (event.getSource() == InputDevice.SOURCE_MOUSE && SDLActivity.mSeparateMouseAndTouch) {
+            if (Build.VERSION.SDK_INT < 14) {
+                mouseButton = 1; // all mouse buttons are the left button
+            } else {
+                try {
+                    mouseButton = (Integer) event.getClass().getMethod("getButtonState").invoke(event);
+                } catch(Exception e) {
+                    mouseButton = 1;    // oh well.
+                }
+            }
+            SDLActivity.onNativeMouse(mouseButton, action, event.getX(0), event.getY(0));
+        } else {
+            switch(action) {
+                case MotionEvent.ACTION_MOVE:
+                    for (i = 0; i < pointerCount; i++) {
+                        pointerFingerId = event.getPointerId(i);
+                        x = event.getX(i) / SDLActivity.getSurfaceWidth();
+                        y = event.getY(i) / SDLActivity.getSurfaceHeight();
+                        p = event.getPressure(i);
+                        if (p > 1.0f) {
+                            // may be larger than 1.0f on some devices
+                            // see the documentation of getPressure(i)
+                            p = 1.0f;
+                        }
+
+                        SDLActivity.onNativeTouch(touchDevId, 0, action, x, y, p);
+                    }
+                    break;
+
+                case MotionEvent.ACTION_UP:
+                case MotionEvent.ACTION_DOWN:
+                    // Primary pointer up/down, the index is always zero
+                    i = 0;
+                case MotionEvent.ACTION_POINTER_UP:
+                case MotionEvent.ACTION_POINTER_DOWN:
+                    // Non primary pointer up/down
+                    if (i == -1) {
+                        i = event.getActionIndex();
+                    }
+
+                    pointerFingerId = event.getPointerId(i);
+                    x = event.getX(i) / SDLActivity.getSurfaceWidth();
+                    y = event.getY(i) / SDLActivity.getSurfaceHeight();
+                    p = event.getPressure(i);
+                    if (p > 1.0f) {
+                        // may be larger than 1.0f on some devices
+                        // see the documentation of getPressure(i)
+                        p = 1.0f;
+                    }
+                    SDLActivity.onNativeTouch(touchDevId, 0, action, x, y, p);
+                    break;
+
+                case MotionEvent.ACTION_CANCEL:
+                    for (i = 0; i < pointerCount; i++) {
+                        pointerFingerId = event.getPointerId(i);
+                        x = event.getX(i) / SDLActivity.getSurfaceWidth();
+                        y = event.getY(i) / SDLActivity.getSurfaceHeight();
+                        p = event.getPressure(i);
+                        if (p > 1.0f) {
+                            // may be larger than 1.0f on some devices
+                            // see the documentation of getPressure(i)
+                            p = 1.0f;
+                        }
+                        SDLActivity.onNativeTouch(touchDevId,0 , MotionEvent.ACTION_UP, x, y, p);
+                    }
+                    break;
+
+                default:
+                    break;
+            }
+        }
+        return true;
     }
 
 }

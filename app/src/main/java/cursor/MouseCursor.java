@@ -8,12 +8,16 @@ import com.libopenmw.openmw.R;
 
 import org.libsdl.app.SDLActivity;
 
+import ui.controls.ScreenControls;
+
 public class MouseCursor implements Choreographer.FrameCallback {
 
+    private View rootLayout;
     private Choreographer choreographer;
     private View cursor;
 
     public MouseCursor(Activity activity) {
+        rootLayout = activity.findViewById(R.id.rootLayout);
         cursor = activity.findViewById(R.id.mouseCursor);
 
         choreographer = Choreographer.getInstance();
@@ -22,6 +26,9 @@ public class MouseCursor implements Choreographer.FrameCallback {
 
     @Override
     public void doFrame(long frameTimeNanos) {
+        boolean isMouseShown =SDLActivity.isMouseShown() == 0
+                || ScreenControls.showControls;
+        rootLayout.setVisibility(isMouseShown ? View.VISIBLE : View.GONE);
         if (SDLActivity.isMouseShown() == 0) {
             cursor.setVisibility(View.GONE);
         } else {

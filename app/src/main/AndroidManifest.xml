@@ -2,7 +2,7 @@
     package="com.libopenmw.openmw"
     android:installLocation="auto"
     android:versionCode="1"
-    android:versionName="0.40">
+    android:versionName="0.43">
 
     <!-- Allow writing to external storage -->
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
@@ -45,16 +45,6 @@
             android:configChanges="keyboardHidden|orientation"
             android:screenOrientation="sensorLandscape"
             android:theme="@style/Theme.AppCompat.FullScreen" />
-        <activity
-            android:name="com.libopenmw.openmw.FileChooser"
-            android:label="Choose File"
-            android:screenOrientation="sensorLandscape">
-            <intent-filter>
-            <action android:name="com.libopenmw.openmw.FileChooser" />
-            <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
-
 
     </application>
 

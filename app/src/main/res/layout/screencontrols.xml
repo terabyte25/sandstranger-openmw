@@ -1,5 +1,4 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/rootLayout"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent" >
 
@@ -19,12 +18,17 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent" >
 
-        <ui.controls.TouchCameraSimulation
-            android:id="@+id/superTouch"
-            android:visibility="gone"
+    <RelativeLayout
+        android:id="@+id/rootLayout"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent" >
+
+    <ui.controls.TouchCameraSimulation
+            android:id="@+id/touchCamera"
+            android:visibility="visible"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-             />
+            />
 
         <ImageButton
             android:id="@+id/buttonrun1"
@@ -104,16 +108,6 @@
             android:focusableInTouchMode="true"
             android:scaleType="fitCenter"
             android:text="F1" />
-
-        <ImageButton
-            android:id="@+id/buttonpause"
-            android:layout_width="50dip"
-            android:layout_height="50dip"
-            android:background="@null"
-            android:focusable="true"
-            android:focusableInTouchMode="true"
-            android:scaleType="fitCenter"
-            android:src="@drawable/pause" />
 
         <ImageButton
             android:id="@+id/key1"
@@ -344,6 +338,17 @@
             android:scaleType="fitCenter"
             android:text="opacity+"
             android:visibility="gone" />
+    </RelativeLayout>
+        <ImageButton
+            android:id="@+id/buttonpause"
+            android:layout_width="50dip"
+            android:visibility="gone"
+            android:layout_height="50dip"
+            android:background="@null"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:scaleType="fitCenter"
+            android:src="@drawable/pause" />
 
         <ImageView
             android:id="@+id/mouseCursor"

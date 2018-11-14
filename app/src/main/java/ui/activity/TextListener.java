@@ -62,8 +62,8 @@ public class TextListener implements TextWatcher {
 
 						break;
 					case "data":
-						file.Writer.write(s + data, ConfigsFileStorageHelper.CONFIGS_FILES_STORAGE_PATH
-								+ "/config/openmw/openmw.cfg", value);
+						file.Writer.write("\""+s + data+"\"", ConfigsFileStorageHelper.CONFIGS_FILES_STORAGE_PATH
+								+ "/config/openmw/openmw.cfg",value);
 
 						break;
 

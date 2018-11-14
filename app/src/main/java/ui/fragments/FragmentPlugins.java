@@ -3,26 +3,33 @@ package ui.fragments;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
-import com.libopenmw.openmw.FileChooser;
+
+import com.afollestad.materialdialogs.folderselector.FileChooserDialog;
+import com.afollestad.materialdialogs.folderselector.FolderChooserDialog;
 import com.libopenmw.openmw.R;
 import com.mobeta.android.dslv.DragSortListView;
+
+import java.io.File;
 import java.io.IOException;
+
 import constants.Constants;
-import ui.dialog.MaterialDialogInterface;
-import ui.dialog.MaterialDialogManager;
-import ui.game.GameState;
 import plugins.PluginReader;
 import plugins.PluginsAdapter;
 import plugins.PluginsStorage;
 import prefs.PreferencesHelper;
+import ui.dialog.MaterialDialogInterface;
+import ui.dialog.MaterialDialogManager;
+import ui.game.GameState;
 
-public class FragmentPlugins extends Fragment {
+public class FragmentPlugins extends Fragment implements FileChooserDialog.FileCallback,FolderChooserDialog.FolderCallback{
 
+    private boolean isDirMode =false;
     private PluginsAdapter adapter;
     private PluginsStorage pluginsStorage;
     protected MaterialDialogManager materialDialogManager;
@@ -115,7 +122,7 @@ public class FragmentPlugins extends Fragment {
 
     public void importMods() {
         try {
-            FileChooser.isDirMode = false;
+            isDirMode =false;
             getFileOrFolder();
         } catch (Exception e) {
 
@@ -124,7 +131,7 @@ public class FragmentPlugins extends Fragment {
 
     public void exportMods() {
         try {
-            FileChooser.isDirMode = true;
+            isDirMode = true;
             getFileOrFolder();
         } catch (Exception e) {
         }
@@ -157,15 +164,44 @@ public class FragmentPlugins extends Fragment {
     }
 
     public void getFileOrFolder() {
-        Intent intent = new Intent(FragmentPlugins.this.getActivity(), FileChooser.class);
-        startActivityForResult(intent, REQUEST_PATH);
+        if (!isDirMode){
+            buildFileChooserDialog();
+        }
+        else {
+            buildFolderChooserDialog();
+        }
+    }
+
+    private void buildFileChooserDialog (){
+        new FileChooserDialog.Builder(FragmentPlugins.this.getActivity())
+                .extensionsFilter(".json") // Optional extension filter, will override mimeType()
+                .tag("optional-identifier")
+                .goUpLabel("Up") // custom go up label, default label is "..."
+                .show(FragmentPlugins.this.getActivity()); // an AppCompatActivity which implements FileCallback
+    }
+
+    private void buildFolderChooserDialog(){
+        new FolderChooserDialog.Builder(this.getActivity())
+                .chooseButton(R.string.md_choose_label)  // changes label of the choose button
+                .tag("optional-identifier")
+                .goUpLabel("Up") // custom go up label, default label is "..."
+                .show(this.getActivity());
+    }
+
+    @Override
+    public void onFileSelection(@NonNull FileChooserDialog dialog, @NonNull File file) {
+        exportImportMods(file.getAbsolutePath());
+    }
+
+    @Override
+    public void onFileChooserDismissed(@NonNull FileChooserDialog dialog) {
+
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_PATH) {
             if (resultCode == Activity.RESULT_OK) {
-                exportImportMods(data);
             }
         }
         super.onActivityResult(requestCode, resultCode, data);
@@ -173,11 +209,9 @@ public class FragmentPlugins extends Fragment {
     }
 
 
-    private void exportImportMods(Intent data) {
-        String curPath = "";
+    private void exportImportMods(String curPath) {
 
-        if (!FileChooser.isDirMode) {
-            curPath = data.getStringExtra("GetFileName");
+        if (!isDirMode) {
             if (curPath.endsWith(".json"))
                 try {
                     pluginsStorage.loadPlugins(curPath);
@@ -186,7 +220,6 @@ public class FragmentPlugins extends Fragment {
 
                 }
         } else {
-            curPath = data.getStringExtra("GetDir");
             try {
                 pluginsStorage.saveJson(curPath + "/files.json");
                 Toast.makeText(
@@ -197,5 +230,15 @@ public class FragmentPlugins extends Fragment {
             }
 
         }
+    }
+
+    @Override
+    public void onFolderSelection(@NonNull FolderChooserDialog dialog, @NonNull File folder) {
+        exportImportMods(folder.getAbsolutePath());
+    }
+
+    @Override
+    public void onFolderChooserDismissed(@NonNull FolderChooserDialog dialog) {
+
     }
 }

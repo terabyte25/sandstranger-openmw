@@ -1,7 +1,9 @@
 
 package ui.activity;
 
+import android.annotation.SuppressLint;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Process;
 import android.preference.PreferenceManager;
@@ -12,6 +14,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.RelativeLayout;
 
 import com.libopenmw.openmw.R;
 
@@ -20,6 +23,7 @@ import org.libsdl.app.SDLActivity;
 import constants.Constants;
 import cursor.MouseCursor;
 import parser.CommandlineParser;
+import ui.controls.Joystick;
 import ui.game.GameState;
 import ui.screen.ScreenScaler;
 import ui.controls.QuickPanel;
@@ -27,12 +31,11 @@ import ui.controls.ScreenControls;
 import file.ConfigsFileStorageHelper;
 
 public class GameActivity extends SDLActivity {
+    private boolean showMouse;
+    //  public static native void getPathToJni(String path);
 
-    public static native void getPathToJni(String path);
+    //   public static native void commandLine(int argc, String[] argv);
 
-    public static native void commandLine(int argc, String[] argv);
-
-    private FrameLayout controlsRootLayout;
     private boolean hideControls = false;
     private ScreenControls screenControls;
     private MouseCursor cursor;
@@ -42,16 +45,12 @@ public class GameActivity extends SDLActivity {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         String graphicsLibrary = prefs.getString("pref_graphicsLibrary", "");
 
-        System.loadLibrary("avcodec");
-        System.loadLibrary("avdevice");
-        System.loadLibrary("avfilter");
-        System.loadLibrary("avformat");
-        System.loadLibrary("avutil");
-        System.loadLibrary("swresample");
-        System.loadLibrary("swscale");
-        System.loadLibrary("openal");
-        System.loadLibrary("openal");
-        System.loadLibrary("SDL2");
+        try {
+            Os.setenv("OPENMW_PHYSICS_FPS", "15", true);
+        } catch (Exception e) {
+
+        }
+
         if (graphicsLibrary.equals("gles2")) {
             try {
                 Os.setenv("OPENMW_GLES_VERSION", "2", true);
@@ -61,26 +60,58 @@ public class GameActivity extends SDLActivity {
                 e.printStackTrace();
             }
         }
+        System.loadLibrary("openal");
         System.loadLibrary("GL");
         System.loadLibrary("SDL2");
         System.loadLibrary("openmw");
     }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        //    super.mSeparateMouseAndTouch = true;
         super.onCreate(savedInstanceState);
         GameState.setGameState(true);
 //        NativeListener.initJavaVm();
         KeepScreenOn();
-     //   parseCommandLineData();
-        getPathToJni(ConfigsFileStorageHelper.CONFIGS_FILES_STORAGE_PATH);
+        //   parseCommandLineData();
+        try {
+            Os.setenv("DATA_FILES", ConfigsFileStorageHelper.CONFIGS_FILES_STORAGE_PATH, true);
+        } catch (Exception e) {
+
+        }
+        currentApiVersion = android.os.Build.VERSION.SDK_INT;
+
+        final int flags = View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                | View.SYSTEM_UI_FLAG_FULLSCREEN
+                | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
+
+        // This work only for android 4.4+
+        if (currentApiVersion >= Build.VERSION_CODES.KITKAT) {
+
+            getWindow().getDecorView().setSystemUiVisibility(flags);
+
+            // Code below is to handle presses of Volume up or Volume down.
+            // Without this, after pressing volume buttons, the navigation bar will
+            // show up and won't hide
+            final View decorView = getWindow().getDecorView();
+            decorView
+                    .setOnSystemUiVisibilityChangeListener(new View.OnSystemUiVisibilityChangeListener() {
+
+                        @Override
+                        public void onSystemUiVisibilityChange(int visibility) {
+                            if ((visibility & View.SYSTEM_UI_FLAG_FULLSCREEN) == 0) {
+                                decorView.setSystemUiVisibility(flags);
+                            }
+                        }
+                    });
+        }
+//        (ConfigsFileStorageHelper.CONFIGS_FILES_STORAGE_PATH);
         showControls();
     }
 
-    private void parseCommandLineData() {
-        CommandlineParser commandlineParser = new CommandlineParser(Constants.commandLineData);
-        commandlineParser.parseCommandLine();
-        commandLine(commandlineParser.getArgc(), commandlineParser.getArgv());
-    }
 
     private void showControls() {
         Joystick.isGameEnabled = true;
@@ -91,23 +122,7 @@ public class GameActivity extends SDLActivity {
             QuickPanel panel = new QuickPanel(this);
             panel.showQuickPanel(hideControls);
             QuickPanel.getInstance().f1.setVisibility(Button.VISIBLE);
-            controlsRootLayout = (FrameLayout) findViewById(R.id.rootLayout);
-        }
-        cursor = new MouseCursor(this);
-    }
-
-    public void hideControlsRootLayout(final boolean needHideControls) {
-        if (!hideControls) {
-            GameActivity.this.runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    if (needHideControls) {
-                        controlsRootLayout.setVisibility(View.GONE);
-                    } else {
-                        controlsRootLayout.setVisibility(View.VISIBLE);
-                    }
-                }
-            });
+            cursor = new MouseCursor(this);
         }
     }
 
@@ -133,6 +148,18 @@ public class GameActivity extends SDLActivity {
             ScreenScaler.textScaler(QuickPanel.getInstance().f1, 4);
             QuickPanel.getInstance().f1.setVisibility(Button.GONE);
         }
+        if(currentApiVersion >= Build.VERSION_CODES.KITKAT && hasFocus)
+        {
+            getWindow().getDecorView().setSystemUiVisibility(
+                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                            | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                            | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                            | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                            | View.SYSTEM_UI_FLAG_FULLSCREEN
+                            | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+        }
     }
+
+    private int currentApiVersion;
 
 }

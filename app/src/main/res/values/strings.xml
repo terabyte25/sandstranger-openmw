@@ -31,7 +31,7 @@
 
     <!-- Graphics library -->
     <string name="pref_graphicsLibrary">Graphics library</string>
-    <string name="pref_graphicsLibrary_default">gles1</string>
+    <string name="pref_graphicsLibrary_default">gles2</string>
     <string name="pref_advanced">Advanced</string>
 
     <string-array name="pref_graphicsLibrary_entries">

@@ -20,11 +20,10 @@ import android.widget.ImageButton;
 
 public class ScreenControls {
 
+	public static boolean showControls = false;
 	private boolean enableTouch = false;
 	private boolean crouchFlag = false;
 	private boolean hideControls;
-	private static final int LEFT_MOUSE_BUTTON_CODE=1;
-	private static final int RIGHT_MOUSE_BUTTON_CODE=2;
 	Activity a;
 	private static ScreenControls instance = null;
 
@@ -111,7 +110,7 @@ public class ScreenControls {
 					.findViewById(R.id.buttoninventory);
 
 			buttonInventory.setOnTouchListener(new ButtonTouchListener(
-					RIGHT_MOUSE_BUTTON_CODE,true));
+					KeyEvent.KEYCODE_B,false));
 
 			final ImageButton buttonJump = (ImageButton) a
 					.findViewById(R.id.buttonsuperjump);
@@ -123,7 +122,7 @@ public class ScreenControls {
 					.findViewById(R.id.buttonFire);
 
 			buttonFire.setOnTouchListener(new ButtonTouchListener(
-					LEFT_MOUSE_BUTTON_CODE,true));
+					KeyEvent.KEYCODE_N,false));
 			final ImageButton buttonMagic = (ImageButton) a
 					.findViewById(R.id.buttonMagic);
 
@@ -177,6 +176,7 @@ public class ScreenControls {
 			buttonPause.setOnClickListener(new View.OnClickListener() {
 				@Override
 				public void onClick(View v) {
+					showControls = !showControls;
 				}
 			});
 			if (controlsFlag == -1 || controlsFlag == 1) {
