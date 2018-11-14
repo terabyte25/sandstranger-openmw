@@ -29,7 +29,7 @@ public class ConfigureControls extends Activity {
 
     public Context context;
 
-    private Joystick joystickLeft;
+    private Joystick joystick;
     private ImageButton buttonRun;
     private ImageButton buttonConsole;
     private ImageButton buttonChangePerson;
@@ -79,6 +79,7 @@ public class ConfigureControls extends Activity {
 
         int controlsFlag;
 
+        findViewById(R.id.superTouch).setVisibility(View.GONE);
         context = this;
 
         Settings = getSharedPreferences(Constants.APP_PREFERENCES,
@@ -228,9 +229,9 @@ public class ConfigureControls extends Activity {
             }
         });
 
-        joystickLeft = (Joystick) findViewById(R.id.joystickLeft);
-        joystickLeft.setOnTouchListener(touchListener);
-        joystickLeft.setId(17);
+        joystick = (Joystick) findViewById(R.id.joystick);
+        joystick.setOnTouchListener(touchListener);
+        joystick.setId(17);
         buttonRun = (ImageButton) findViewById(R.id.buttonrun1);
         buttonRun.setId(1);
         buttonRun.setOnTouchListener(touchListener);
@@ -296,7 +297,7 @@ public class ConfigureControls extends Activity {
         buttonCrouch.setOnTouchListener(touchListener);
 
         if (controlsFlag == -1 || controlsFlag == 1) {
-            joystickLeft.setLayoutParams(ControlsParams.coordinates(joystickLeft, 75,
+            joystick.setLayoutParams(ControlsParams.coordinates(joystick, 75,
                     400, 250, 250));
             setSizeToSharedPreferences(Constants.APP_PREFERENCES_JOYSTICK_SIZE,
                     ScreenScaler.getInstance().getScaledCoordinateX(250));
@@ -308,7 +309,7 @@ public class ConfigureControls extends Activity {
                             .getInstance().getScaledCoordinateX(70));
 
             AlphaView.setAlphaForView(buttonRun, 0.5f);
-            AlphaView.setAlphaForView(joystickLeft, 0.5f);
+            AlphaView.setAlphaForView(joystick, 0.5f);
             AlphaView.setAlphaForView(buttonCrouch, 0.5f);
             AlphaView.setAlphaForView(buttonUse, 0.5f);
             AlphaView.setAlphaForView(buttonMagic, 0.5f);
@@ -586,14 +587,14 @@ public class ConfigureControls extends Activity {
             AlphaView.setAlphaForView(buttonCrouch, Settings.getFloat(
                     Constants.APP_PREFERENCES_BUTTON_CROUCH_OPACITY, -1));
 
-            AlphaView.setAlphaForView(joystickLeft, Settings.getFloat(
+            AlphaView.setAlphaForView(joystick, Settings.getFloat(
                     Constants.APP_PREFERENCES_JOYSTICK_OPACITY, -1));
             AlphaView.setAlphaForView(buttonChangePerson, Settings.getFloat(
                     Constants.APP_PREFERENCES_BUTTON_CHANGEPERSON_OPACITY, -1));
 
 
-            joystickLeft.setLayoutParams(ControlsParams.coordinatesConfigureControls(
-                    joystickLeft,
+            joystick.setLayoutParams(ControlsParams.coordinatesConfigureControls(
+                    joystick,
                     Settings.getInt(Constants.APP_PREFERENCES_JOYSTICK_X, -1),
                     Settings.getInt(Constants.APP_PREFERENCES_JOYSTICK_Y, -1),
                     Settings.getInt(Constants.APP_PREFERENCES_JOYSTICK_SIZE, -1),
@@ -1018,9 +1019,9 @@ public class ConfigureControls extends Activity {
         editor.putInt(Constants.APP_PREFERENCES_BUTTON_CROUCH_Y,
                 (int) ViewHelper.getY(buttonCrouch));
         editor.putInt(Constants.APP_PREFERENCES_JOYSTICK_X,
-                (int) ViewHelper.getX(joystickLeft));
+                (int) ViewHelper.getX(joystick));
         editor.putInt(Constants.APP_PREFERENCES_JOYSTICK_Y,
-                (int) ViewHelper.getY(joystickLeft));
+                (int) ViewHelper.getY(joystick));
         editor.putInt(Constants.APP_PREFERENCES_KEY_F1_X, (int) ViewHelper.getY(f1));
         editor.putInt(Constants.APP_PREFERENCES_KEY_F1_Y, (int) ViewHelper.getY(f1));
 
@@ -1126,7 +1127,7 @@ public class ConfigureControls extends Activity {
         else if (buttonFlag == 16)
             AlphaView.setAlphaForView(buttonCrouch, setAlphaFromButtonToSharedPreferences(Constants.APP_PREFERENCES_BUTTON_CROUCH_OPACITY));
         else if (buttonFlag == 17)
-            AlphaView.setAlphaForView(joystickLeft, setAlphaFromButtonToSharedPreferences(Constants.APP_PREFERENCES_JOYSTICK_OPACITY));
+            AlphaView.setAlphaForView(joystick, setAlphaFromButtonToSharedPreferences(Constants.APP_PREFERENCES_JOYSTICK_OPACITY));
         else if (buttonFlag == 18)
             AlphaView.setAlphaForView(f1, setAlphaFromButtonToSharedPreferences(Constants.APP_PREFERENCES_KEY_F1_OPACITY));
 
@@ -1291,10 +1292,10 @@ public class ConfigureControls extends Activity {
                                     setSizeFromButtonToSharedPreferences(Constants.APP_PREFERENCES_BUTTON_CROUCH_SIZE),
                                     setSizeFromButtonToSharedPreferences(Constants.APP_PREFERENCES_BUTTON_CROUCH_SIZE)));
         else if (buttonFlag == 17)
-            joystickLeft.setLayoutParams(ControlsParams.coordinatesConfigureControls(
-                    joystickLeft,
-                    (int) ViewHelper.getX(joystickLeft),
-                    (int) ViewHelper.getY(joystickLeft),
+            joystick.setLayoutParams(ControlsParams.coordinatesConfigureControls(
+                    joystick,
+                    (int) ViewHelper.getX(joystick),
+                    (int) ViewHelper.getY(joystick),
                     setSizeFromButtonToSharedPreferences(Constants.APP_PREFERENCES_JOYSTICK_SIZE),
                     setSizeFromButtonToSharedPreferences(Constants.APP_PREFERENCES_JOYSTICK_SIZE)));
         else if (buttonFlag == 18)

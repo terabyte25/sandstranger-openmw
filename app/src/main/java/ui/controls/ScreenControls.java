@@ -62,10 +62,7 @@ public class ScreenControls {
 							ViewGroup.LayoutParams.FILL_PARENT,
 							ViewGroup.LayoutParams.FILL_PARENT));
 
-			final Joystick joystickLeft = (Joystick) a.findViewById(R.id.joystickLeft);
-			joystickLeft.setStick(0);
-			Joystick joystickRight = a.findViewById(R.id.joystickRight);
-			joystickRight.setStick(1);
+			final Joystick joystick = (Joystick) a.findViewById(R.id.joystick);
 
 			final ImageButton buttonRun = (ImageButton) a
 					.findViewById(R.id.buttonrun1);
@@ -182,19 +179,16 @@ public class ScreenControls {
 				public void onClick(View v) {
 				}
 			});
-			if (true || controlsFlag == -1 || controlsFlag == 1) {
-				joystickLeft.setLayoutParams(ControlsParams.coordinates(joystickLeft,
+			if (controlsFlag == -1 || controlsFlag == 1) {
+				joystick.setLayoutParams(ControlsParams.coordinates(joystick,
 						75, 400, 250, 250));
-
-				joystickRight.setLayoutParams(ControlsParams.coordinates(joystickRight,
-						650, 400, 250, 250));
 
 				buttonRun.setLayoutParams(ControlsParams.coordinates(buttonRun,
 						65, 330, 70, 70));
 
 
 				AlphaView.setAlphaForView(buttonRun, 0.5f);
-				AlphaView.setAlphaForView(joystickLeft,0.5f);
+				AlphaView.setAlphaForView(joystick,0.5f);
 				AlphaView.setAlphaForView(buttonCrouch,0.5f);
 				AlphaView.setAlphaForView(buttonUse,0.5f);
 				AlphaView.setAlphaForView(buttonMagic,0.5f);
@@ -296,13 +290,13 @@ public class ScreenControls {
 				AlphaView.setAlphaForView(buttonCrouch, Settings.getFloat(
 						Constants.APP_PREFERENCES_BUTTON_CROUCH_OPACITY, -1));
 
-				AlphaView.setAlphaForView(joystickLeft, Settings.getFloat(
+				AlphaView.setAlphaForView(joystick, Settings.getFloat(
 						Constants.APP_PREFERENCES_JOYSTICK_OPACITY, -1));
 
 
 
-				joystickLeft.setLayoutParams(ControlsParams.coordinatesConfigureControls(
-						joystickLeft, Settings.getInt(
+				joystick.setLayoutParams(ControlsParams.coordinatesConfigureControls(
+						joystick, Settings.getInt(
 								Constants.APP_PREFERENCES_JOYSTICK_X, -1),
 						Settings.getInt(Constants.APP_PREFERENCES_JOYSTICK_Y,
 								-1), Settings.getInt(

@@ -83,6 +83,7 @@ public class GameActivity extends SDLActivity {
     }
 
     private void showControls() {
+        Joystick.isGameEnabled = true;
         hideControls = PreferenceManager.getDefaultSharedPreferences(this).getBoolean(Constants.HIDE_CONTROLS, false);
         if (!hideControls) {
             screenControls = new ScreenControls(this);

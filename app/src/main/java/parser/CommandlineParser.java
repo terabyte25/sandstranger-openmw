@@ -25,9 +25,6 @@ public class CommandlineParser {
             argv[0] = "";
             argc = 1;
         }
-
-        argv = new String[] { "openmw", "--skip-menu", "--start", "Balmora" };
-        argc = 4;
     }
 
     private String[] createArgv(String[] argv) {
