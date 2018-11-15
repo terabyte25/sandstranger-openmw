@@ -43,7 +43,9 @@ public class ConfigureControls extends Activity {
 
     public static TextView button;
 
+    private ImageButton buttonBackspace;
     private ImageButton buttonDiary;
+    private ImageButton buttonKeyboard;
     private ImageButton buttonPause;
     private ImageButton buttonLoad;
     private ImageButton buttonSave;
@@ -266,6 +268,8 @@ public class ConfigureControls extends Activity {
         joystickLeft = (Joystick) findViewById(R.id.joystickLeft);
         joystickLeft.setOnTouchListener(touchListener);
         joystickLeft.setId(17);
+        joystickLeft.setBackgroundColor(Color.GRAY);
+
         buttonRun = (ImageButton) findViewById(R.id.buttonrun1);
         buttonRun.setId(1);
         buttonRun.setOnTouchListener(touchListener);
@@ -287,6 +291,14 @@ public class ConfigureControls extends Activity {
         buttonDiary = (ImageButton) findViewById(R.id.buttonDiary);
         buttonDiary.setOnTouchListener(touchListener);
         buttonDiary.setId(6);
+
+        buttonKeyboard = (ImageButton) findViewById(R.id.keyboard_image_button);
+        buttonKeyboard.setOnTouchListener(touchListener);
+        buttonKeyboard.setId(30);
+
+        buttonBackspace = findViewById(R.id.buttonBackspace);
+        buttonBackspace.setOnTouchListener(touchListener);
+        buttonBackspace.setId(31);
 
         buttonPause = (ImageButton) findViewById(R.id.buttonpause);
         buttonPause.setOnTouchListener(touchListener);
@@ -356,6 +368,8 @@ public class ConfigureControls extends Activity {
             AlphaView.setAlphaForView(buttonSave, 0.5f);
             AlphaView.setAlphaForView(buttonPause, 0.5f);
             AlphaView.setAlphaForView(buttonDiary, 0.5f);
+            AlphaView.setAlphaForView(buttonKeyboard, 0.5f);
+            AlphaView.setAlphaForView(buttonBackspace, 0.5f);
             AlphaView.setAlphaForView(buttonChangePerson, 0.5f);
             AlphaView.setAlphaForView(buttonWait, 0.5f);
             AlphaView.setAlphaForView(buttonConsole, 0.5f);
@@ -467,6 +481,10 @@ public class ConfigureControls extends Activity {
             setAlphaToSharedPreferences(
                     Constants.APP_PREFERENCES_BUTTON_DIARY_OPACITY, (float) 0.5);
             setAlphaToSharedPreferences(
+                    Constants.APP_PREFERENCES_BUTTON_BACKSPACE_OPASITY, (float) 0.5);
+            setAlphaToSharedPreferences(
+                    Constants.APP_PREFERENCES_BUTTON_KEYBOARD_OPACITY, (float) 0.5);
+            setAlphaToSharedPreferences(
                     Constants.APP_PREFERENCES_BUTTON_PAUSE_OPACITY, (float) 0.5);
             setAlphaToSharedPreferences(
                     Constants.APP_PREFERENCES_BUTTON_LOAD_OPACITY, (float) 0.5);
@@ -521,6 +539,17 @@ public class ConfigureControls extends Activity {
             setSizeToSharedPreferences(
                     Constants.APP_PREFERENCES_BUTTON_DIARY_SIZE, ScreenScaler
                             .getInstance().getScaledCoordinateX(70));
+            buttonKeyboard.setLayoutParams(ControlsParams.coordinates(buttonKeyboard,
+                    500, 0, 70, 70));
+            setSizeToSharedPreferences(
+                    Constants.APP_PREFERENCES_BUTTON_KEYBOARD_SIZE, ScreenScaler
+                            .getInstance().getScaledCoordinateX(70));
+            buttonBackspace.setLayoutParams(ControlsParams.coordinates(buttonBackspace,
+                    600, 0, 70, 70));
+            setSizeToSharedPreferences(
+                    Constants.APP_PREFERENCES_BUTTON_BACKSPACE_SIZE, ScreenScaler
+                            .getInstance().getScaledCoordinateX(70));
+
             buttonPause.setLayoutParams(ControlsParams.coordinates(buttonPause,
                     950, 0, 60, 60));
             setSizeToSharedPreferences(
@@ -588,6 +617,12 @@ public class ConfigureControls extends Activity {
 
             AlphaView.setAlphaForView(buttonDiary, Settings.getFloat(
                     Constants.APP_PREFERENCES_BUTTON_DIARY_OPACITY, -1));
+
+            AlphaView.setAlphaForView(buttonBackspace, Settings.getFloat(
+                    Constants.APP_PREFERENCES_BUTTON_BACKSPACE_OPASITY, -1));
+
+            AlphaView.setAlphaForView(buttonKeyboard, Settings.getFloat(
+                    Constants.APP_PREFERENCES_BUTTON_KEYBOARD_OPACITY, -1));
 
             AlphaView.setAlphaForView(buttonPause, Settings.getFloat(
                     Constants.APP_PREFERENCES_BUTTON_PAUSE_OPACITY, -1));
@@ -721,6 +756,39 @@ public class ConfigureControls extends Activity {
                             Settings.getInt(
                                     Constants.APP_PREFERENCES_BUTTON_DIARY_SIZE,
                                     -1)));
+
+            buttonKeyboard
+                    .setLayoutParams(ControlsParams.coordinatesConfigureControls(
+                            buttonKeyboard,
+                            Settings.getInt(
+                                    Constants.APP_PREFERENCES_BUTTON_KEYBOARD_X,
+                                    -1),
+                            Settings.getInt(
+                                    Constants.APP_PREFERENCES_BUTTON_KEYBOARD_Y,
+                                    -1),
+                            Settings.getInt(
+                                    Constants.APP_PREFERENCES_BUTTON_KEYBOARD_SIZE,
+                                    -1),
+                            Settings.getInt(
+                                    Constants.APP_PREFERENCES_BUTTON_KEYBOARD_SIZE,
+                                    -1)));
+
+            buttonBackspace
+                    .setLayoutParams(ControlsParams.coordinatesConfigureControls(
+                            buttonBackspace,
+                            Settings.getInt(
+                                    Constants.APP_PREFERENCES_BUTTON_BACKSPACE_X,
+                                    -1),
+                            Settings.getInt(
+                                    Constants.APP_PREFERENCES_BUTTON_BACKSPACE_Y,
+                                    -1),
+                            Settings.getInt(
+                                    Constants.APP_PREFERENCES_BUTTON_BACKSPACE_SIZE,
+                                    -1),
+                            Settings.getInt(
+                                    Constants.APP_PREFERENCES_BUTTON_BACKSPACE_SIZE,
+                                    -1)));
+
             buttonPause
                     .setLayoutParams(ControlsParams.coordinatesConfigureControls(
                             buttonPause,
@@ -1012,6 +1080,17 @@ public class ConfigureControls extends Activity {
                 (int) ViewHelper.getX(buttonDiary));
         editor.putInt(Constants.APP_PREFERENCES_BUTTON_DIARY_Y,
                 (int) ViewHelper.getY(buttonDiary));
+
+        editor.putInt(Constants.APP_PREFERENCES_BUTTON_KEYBOARD_X,
+                (int) ViewHelper.getX(buttonKeyboard));
+        editor.putInt(Constants.APP_PREFERENCES_BUTTON_KEYBOARD_Y,
+                (int) ViewHelper.getY(buttonKeyboard));
+
+        editor.putInt(Constants.APP_PREFERENCES_BUTTON_BACKSPACE_X,
+                (int) ViewHelper.getX(buttonBackspace));
+        editor.putInt(Constants.APP_PREFERENCES_BUTTON_BACKSPACE_Y,
+                (int) ViewHelper.getY(buttonBackspace));
+
         editor.putInt(Constants.APP_PREFERENCES_BUTTON_SAVE_X,
                 (int) ViewHelper.getX(buttonSave));
         editor.putInt(Constants.APP_PREFERENCES_BUTTON_SAVE_Y,
@@ -1187,7 +1266,10 @@ public class ConfigureControls extends Activity {
             AlphaView.setAlphaForView(key8, setAlphaFromButtonToSharedPreferences(Constants.APP_PREFERENCES_KEY_8_OPACITY));
         else if (buttonFlag == 29)
             AlphaView.setAlphaForView(key9, setAlphaFromButtonToSharedPreferences(Constants.APP_PREFERENCES_KEY_9_OPACITY));
-
+        else if (buttonFlag == 30)
+            AlphaView.setAlphaForView(buttonKeyboard, setAlphaFromButtonToSharedPreferences(Constants.APP_PREFERENCES_BUTTON_KEYBOARD_OPACITY));
+        else if (buttonFlag == 31)
+            AlphaView.setAlphaForView(buttonBackspace, setAlphaFromButtonToSharedPreferences(Constants.APP_PREFERENCES_BUTTON_BACKSPACE_OPASITY));
     }
 
     public void setButtonsSize() {
@@ -1418,7 +1500,22 @@ public class ConfigureControls extends Activity {
                     (int) ViewHelper.getY(key9),
                     setSizeFromButtonToSharedPreferences(Constants.APP_PREFERENCES_KEY_9_SIZE),
                     setSizeFromButtonToSharedPreferences(Constants.APP_PREFERENCES_KEY_9_SIZE)));
-
+        else if (buttonFlag == 30)
+            buttonKeyboard
+                    .setLayoutParams(ControlsParams.coordinatesConfigureControls(
+                            buttonKeyboard,
+                            (int) ViewHelper.getX(buttonKeyboard),
+                            (int) ViewHelper.getY(buttonKeyboard),
+                            setSizeFromButtonToSharedPreferences(Constants.APP_PREFERENCES_BUTTON_KEYBOARD_SIZE),
+                            setSizeFromButtonToSharedPreferences(Constants.APP_PREFERENCES_BUTTON_KEYBOARD_SIZE)));
+        else if (buttonFlag == 31)
+            buttonBackspace
+                    .setLayoutParams(ControlsParams.coordinatesConfigureControls(
+                            buttonBackspace,
+                            (int) ViewHelper.getX(buttonBackspace),
+                            (int) ViewHelper.getY(buttonBackspace),
+                            setSizeFromButtonToSharedPreferences(Constants.APP_PREFERENCES_BUTTON_BACKSPACE_SIZE),
+                            setSizeFromButtonToSharedPreferences(Constants.APP_PREFERENCES_BUTTON_BACKSPACE_SIZE)));
     }
 
     @Override

@@ -14,15 +14,15 @@
 
     <string-array name="resolution_entry">
         <item>Normal (1x)</item>
-        <item>Double (2x)</item>
         <item>Half (0.5x)</item>
+        <item>Lowing (0.25x)</item>
     </string-array>
 
 
     <string-array name="resolution_array">
         <item>normalResolution</item>
-        <item>doubleResolution</item>
         <item>halfResolution</item>
+        <item>lowingResolution</item>
     </string-array>
 
     <string name="start_game_label">Start game</string>
@@ -68,5 +68,6 @@
     </string-array>
 
     <string name="pref_physicsFPS_default">60</string>
+    <string name="pref_resolution_default">normalResolution</string>
 
 </resources>

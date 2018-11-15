@@ -26,6 +26,7 @@ import android.widget.RelativeLayout;
 
 import com.libopenmw.openmw.R;
 
+import org.libsdl.app.EscapeKeySimulation;
 import org.libsdl.app.SDLActivity;
 import org.libsdl.app.SDLInputConnection;
 
@@ -57,16 +58,11 @@ public class GameActivity extends SDLActivity {
         if (!physicsFPS.isEmpty()) {
             try {
                 Os.setenv("OPENMW_PHYSICS_FPS", physicsFPS, true);
+                Os.setenv("OSG_TEXT_SHADER_TECHNIQUE", "NO_TEXT_SHADER", true);
             } catch (ErrnoException e) {
                 Log.e("OpenMW", "Failed setting environment variables.");
                 e.printStackTrace();
             }
-        }
-
-        try {
-            Os.setenv("OPENMW_PHYSICS_FPS", "15", true);
-        } catch (Exception e) {
-
         }
 
         if (graphicsLibrary.equals("gles2")) {
@@ -85,6 +81,7 @@ public class GameActivity extends SDLActivity {
         System.loadLibrary("openmw");
     }
 
+    private int currentApiVersion;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         //    super.mSeparateMouseAndTouch = true;
@@ -141,79 +138,7 @@ public class GameActivity extends SDLActivity {
     }
 
 
-    // Touch events
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        switch (event.getActionMasked()) {
-            case MotionEvent.ACTION_DOWN:
-            case MotionEvent.ACTION_POINTER_DOWN:
-                if (numPointersDown == 0) {
-                    startX = event.getX();
-                    startY = event.getY();
-                }
-                ++numPointersDown;
-                maxPointersDown = Math.max(numPointersDown, maxPointersDown);
-                break;
-            case MotionEvent.ACTION_UP:
-            case MotionEvent.ACTION_POINTER_UP:
-                numPointersDown = Math.max(0, numPointersDown - 1);
-                if (numPointersDown == 0) {
-                    // everything's up, do the action
-                    if (maxPointersDown == 3) {
-                        showVirtualInput();
-                    } else if (!isMoving && SDLActivity.isMouseShown() != 0) {
-                        // only send clicks if we didn't move
-                        int mouseX = SDLActivity.getMouseX();
-                        int mouseY = SDLActivity.getMouseY();
-                        int mouseButton = 0;
-
-                        if (maxPointersDown == 1)
-                            mouseButton = 1;
-                        else if (maxPointersDown == 2)
-                            mouseButton = 2;
-
-                        if (mouseButton != 0) {
-                            SDLActivity.onNativeMouse(mouseButton, MotionEvent.ACTION_DOWN, mouseX, mouseY);
-                            final Handler handler = new Handler();
-                            handler.postDelayed(() -> SDLActivity.onNativeMouse(0, MotionEvent.ACTION_UP, mouseX, mouseY), 100);
-                        }
-                    }
-
-                    maxPointersDown = 0;
-                    isMoving = false;
-                }
-                break;
-            case MotionEvent.ACTION_MOVE:
-                if (maxPointersDown == 1) {
-                    float diffX = event.getX() - startX;
-                    float diffY = event.getY() - startY;
-                    double distance = Math.sqrt(diffX * diffX + diffY * diffY);
-
-                    if (distance > mouseDeadzone) {
-                        isMoving = true;
-                        startX = event.getX();
-                        startY = event.getY();
-                    } else if (isMoving) {
-                        int mouseX = SDLActivity.getMouseX();
-                        int mouseY = SDLActivity.getMouseY();
-
-                        long newMouseX = Math.round(mouseX + diffX * mouseScalingFactor);
-                        long newMouseY = Math.round(mouseY + diffY * mouseScalingFactor);
-
-                        if (SDLActivity.isMouseShown() != 0)
-                            SDLActivity.onNativeMouse(0, MotionEvent.ACTION_MOVE, newMouseX, newMouseY);
-
-                        startX = event.getX();
-                        startY = event.getY();
-                    }
-                }
-                break;
-        }
-
-        return true;
-    }
-
-    private void showVirtualInput() {
+    public void showVirtualInput() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Virtual input");
 
@@ -227,6 +152,11 @@ public class GameActivity extends SDLActivity {
         builder.setNegativeButton("Cancel", (dialog, which) -> dialog.cancel());
 
         builder.show();
+    }
+
+    @Override
+    public void onBackPressed(){
+        EscapeKeySimulation.onFakeBackPressed();
     }
 
 }

@@ -30,6 +30,10 @@ public class Constants {
 	public static final String APP_PREFERENCES_BUTTON_DIARY_SIZE = "buttondiarysize";
 	public static final String APP_PREFERENCES_BUTTON_DIARY_OPACITY = "buttondiaryopacity";
 	public static final String APP_PREFERENCES_BUTTON_DIARY_Y = "buttondiaryy";
+	public static final String APP_PREFERENCES_BUTTON_KEYBOARD_X = "buttonkeyboardx";
+	public static final String APP_PREFERENCES_BUTTON_KEYBOARD_SIZE = "buttonkeyboardize";
+	public static final String APP_PREFERENCES_BUTTON_KEYBOARD_OPACITY = "buttonkeyopacity";
+	public static final String APP_PREFERENCES_BUTTON_KEYBOARD_Y = "buttonk4444eyy";
 	public static final String APP_PREFERENCES_BUTTON_SAVE_X = "buttonsavex";
 	public static final String APP_PREFERENCES_BUTTON_SAVE_SIZE = "buttonsavesize";
 	public static final String APP_PREFERENCES_BUTTON_SAVE_OPACITY = "buttonsaveopacity";
@@ -79,6 +83,11 @@ public class Constants {
 	public static final String APP_PREFERENCES_BUTTON_SHOWPANEL_Y = "buttonshowpanely";
 	public static final String APP_PREFERENCES_BUTTON_SHOWPANEL_OPASITY = "buttonshowpanelopacity";
 	public static final String APP_PREFERENCES_BUTTON_SHOWPANEL_SIZE = "buttonshowpanelsize";
+
+	public static final String APP_PREFERENCES_BUTTON_BACKSPACE_X = "buttondelx";
+	public static final String APP_PREFERENCES_BUTTON_BACKSPACE_Y = "buttondely";
+	public static final String APP_PREFERENCES_BUTTON_BACKSPACE_OPASITY = "buttonbdelopacity";
+	public static final String APP_PREFERENCES_BUTTON_BACKSPACE_SIZE = "buttondelsize";
 
 	public static final String APP_PREFERENCES_KEY_F1_X = "Keyf1x";
 	public static final String APP_PREFERENCES_KEY_F1_Y = "Keyf1y";

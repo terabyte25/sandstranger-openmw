@@ -44,28 +44,6 @@ public class Joystick extends View {
     }
 
     @Override
-    public void onDraw(Canvas canvas) {
-        super.onDraw(canvas);
-
-        paint.setStyle(Paint.Style.STROKE);
-        paint.setColor(Color.RED);
-        canvas.drawRect(0, 0, getWidth() - 1, getHeight() - 1, paint);
-        paint.setColor(Color.GREEN);
-
-        // Draw circle for initial touch
-        if (down) {
-            canvas.drawCircle(initialX, initialY, getWidth() / 10, paint);
-        }
-
-        if (currentX < 0 || currentY < 0) {
-            currentX = currentY = getWidth() / 2;
-        }
-
-        // Draw circle for current stick position
-        canvas.drawCircle(currentX, currentY, getWidth() / 5, paint);
-    }
-
-    @Override
     public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         setMeasuredDimension(widthMeasureSpec, heightMeasureSpec);
     }

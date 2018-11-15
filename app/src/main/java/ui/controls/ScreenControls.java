@@ -3,6 +3,7 @@ package ui.controls;
 import org.libsdl.app.SDL;
 import org.libsdl.app.SDLActivity;
 
+import ui.activity.GameActivity;
 import ui.screen.ScreenScaler;
 
 import com.libopenmw.openmw.R;
@@ -170,16 +171,10 @@ public class ScreenControls {
 			buttonDiary.setOnTouchListener(new ButtonTouchListener(
 					KeyEvent.KEYCODE_J,false));
 
-			buttonKeyboard.setOnClickListener(new View.OnClickListener() {
-				@Override
-				public void onClick(View view) {
-					if (mTextEdit!=null) {
-						Log.d("ADDWDAWDDAW","DWADWAWDADdwadwdawda");
-						InputMethodManager imm = (InputMethodManager) SDL.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-						imm.showSoftInput(mTextEdit, 0);
-					}
-				}
-			});
+			buttonKeyboard.setOnClickListener(view -> {
+                GameActivity activity = (GameActivity) a;
+                activity.showVirtualInput();
+            });
 
 			final ImageButton buttonBackspace = a.findViewById(R.id.buttonBackspace);
 			buttonBackspace.setOnTouchListener(new ButtonTouchListener(
@@ -287,6 +282,8 @@ public class ScreenControls {
 				AlphaView.setAlphaForView(buttonKeyboard, Settings.getFloat(
 						Constants.APP_PREFERENCES_BUTTON_KEYBOARD_OPACITY, -1));
 
+				AlphaView.setAlphaForView(buttonBackspace, Settings.getFloat(
+						Constants.APP_PREFERENCES_BUTTON_BACKSPACE_OPASITY, -1));
 
 				AlphaView.setAlphaForView(buttonPause,Settings.getFloat(
 						Constants.APP_PREFERENCES_BUTTON_PAUSE_OPACITY, -1));
@@ -448,6 +445,22 @@ public class ScreenControls {
 										-1),
 								Settings.getInt(
 										Constants.APP_PREFERENCES_BUTTON_KEYBOARD_SIZE,
+										-1)));
+
+				buttonBackspace
+						.setLayoutParams(ControlsParams.coordinatesConfigureControls(
+								buttonBackspace,
+								Settings.getInt(
+										Constants.APP_PREFERENCES_BUTTON_BACKSPACE_X,
+										-1),
+								Settings.getInt(
+										Constants.APP_PREFERENCES_BUTTON_BACKSPACE_Y,
+										-1),
+								Settings.getInt(
+										Constants.APP_PREFERENCES_BUTTON_BACKSPACE_SIZE,
+										-1),
+								Settings.getInt(
+										Constants.APP_PREFERENCES_BUTTON_BACKSPACE_SIZE,
 										-1)));
 
 				buttonPause

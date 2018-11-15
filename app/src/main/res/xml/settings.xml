@@ -54,6 +54,7 @@
             android:title="Resolution"
             android:dialogTitle="Screen resolution"
             android:entries="@array/resolution_entry"
+            android:defaultValue="@string/pref_resolution_default"
             android:entryValues="@array/resolution_array" />
     </PreferenceCategory>
 
